@@ -48,7 +48,7 @@ set PATH=%PATH%;%DOTNETFX2%
 
 REM Check if a parameter (file path) is provided
 if "%~1"=="" (
-    goto :uninstall
+    goto :management
 ) else (
     goto :install
 )
@@ -65,19 +65,17 @@ echo Service bin: %service_bin%
 :confirm_install
 echo:
 echo Current service name is: %service_name%
-set /p confirm=Do you want to continue with this service name? (y/n): 
+choice /c yn /n /m "Do you want to continue with this service name? (y/n)" 
 
-if /i "%confirm%"=="y" (
-    echo Proceeding with service name: %service_name%
+if %errorlevel% == 1 (
+    cls
+    echo Installing %service_name%
     echo:
     goto :do_install
-) else if /i "%confirm%"=="n" (
+) else (
     set /p service_name=Please enter a new service name: 
     cls
     goto :prompt_service_name
-) else (
-    echo Invalid input. Please enter 'y' or 'n'.
-    goto :confirm_install
 )
 
 :do_install
@@ -93,7 +91,7 @@ if '%errorlevel%' == '0' (
 goto :end
 
 
-:uninstall
+:management
 :: Counter for numbering services
 set count=0
 
@@ -104,7 +102,7 @@ for /f "tokens=*" %%A in (%filename%) do (
 )
 
 :services
-echo Uninstall mode
+echo Management mode
 if '%count%' == '0' (
     echo %filename% is empty.
     echo:
@@ -129,22 +127,45 @@ if not defined service[%choice%] (
 :: Set the selected service to a variable
 set "selected_service=!service[%choice%]!"
 
-:: Output the selected service
-:confirm_uninstall
+:: Confirm selected service
+:confirm_management
 echo:
 echo Current service name is: %selected_service%
-set /p confirm=Are you sure you want to uninstall this service?: (y/n): 
+choice /c yn /n /m "Are you sure you want to continue with this service?: (y/n)"
 
-if /i "%confirm%"=="y" (
-    echo Proceeding with service name: %selected_service%
-    echo:
-    goto :do_uninstall
-) else if /i "%confirm%"=="n" (
+if %errorlevel% == 1 (
+    goto :choose_action
+) else (
     cls
     goto :services
-) else (
-    echo Invalid input. Please enter 'y' or 'n'.
+)
+
+:choose_action
+cls
+echo %selected_service% management
+echo:
+echo Please choose your action:
+echo 1. Uninstall
+echo 2. Set description
+choice /c 12 /n
+
+if %errorlevel% == 1 (
     goto :confirm_uninstall
+) else ( goto :get_description )
+
+:confirm_uninstall
+cls
+echo Current service name is: %selected_service%
+choice /c yn /n /m "Are you sure you want to uninstall this service?: (y/n)"
+
+if %errorlevel% == 1 (
+    cls
+    echo Uninstalling %selected_service%
+    echo:
+    goto :do_uninstall
+) else (
+    cls
+    goto :choose_action
 )
 
 :do_uninstall
@@ -168,6 +189,28 @@ goto :end
 :: Replace the original file with the temporary file
 move /y %tempfile% %filename% >nul 2>&1
 goto :end
+
+:get_description
+cls
+echo Setting description for %selected_service% service
+echo Please write your description for this service:
+set /p description=
+echo:
+echo Entered description: "%description%"
+choice /c yn /n /m "Continue?: (y/n)"
+
+if %errorlevel% == 1 (
+    cls
+    echo Setting description for %selected_service% service
+    echo:
+    goto :set_description
+) else ( goto :get_description )
+
+:set_description
+echo Setting IEPPAMS Win Service description...
+echo ---------------------------------------------------
+sc.exe description "%selected_service%" "%description%"
+echo ---------------------------------------------------
 
 :end
 pause
