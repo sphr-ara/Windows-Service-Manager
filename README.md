@@ -1,6 +1,6 @@
 # Windows Service Manager
 ### Description:
-Windows Service Manager is a tool designed for installing and uninstalling Windows services effortlessly.
+Windows Service Manager is a tool designed for installing and modifying Windows services effortlessly.
 
 
 ### Instructions:
