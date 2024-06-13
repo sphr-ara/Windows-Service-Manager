@@ -12,7 +12,7 @@ Windows Service Manager is a tool designed for installing and modifying Windows 
   - Drag and drop your bin file onto `ServiceManager.bat`.
   - Grant administrative access when prompted[^1].
   - Choose a name for your service.
-  - Confirm your choice by entering 'y'.
+  - Confirm your service name by entering 'y'.
 
 - Uninstallation:
   - Double-click on `ServiceManager.bat`.
