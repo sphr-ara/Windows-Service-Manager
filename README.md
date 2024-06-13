@@ -26,7 +26,7 @@ Windows Service Manager is a tool designed for installing and uninstalling Windo
 - Set description:
   - Double-click on `ServiceManager.bat`.
   - Grant administrative access when prompted[^1].
-  - Select the service you wish to uninstall from the list.
+  - Select the service you wish to set description for from the list.
     - (If your service is not listed, add its name to `service_list.txt` in the directory of `ServiceManager.bat`)
   - Confirm your choice by entering 'y'.
   - Choose set description from action menu by entering 2.
