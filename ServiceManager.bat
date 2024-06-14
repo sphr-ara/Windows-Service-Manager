@@ -12,21 +12,7 @@ if '%errorlevel%' NEQ '0' (
 
 :UACPrompt
     echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-    
-    REM Get path from arguments without quotes and process spaces
-    setlocal enabledelayedexpansion
-    set "params="
-    for %%I in (%*) do (
-        set "arg=%%~I"
-        if defined params (
-            set "params=!params! ""!arg!"""
-        ) else (
-            set "params=""!arg!"""
-        )
-    )
-	
-    echo UAC.ShellExecute "cmd.exe", "/c """"%~s0"" !params!""", "", "runas", 1 >> "%temp%\getadmin.vbs"
-    endlocal
+    echo UAC.ShellExecute "cmd.exe", "/c """"%~s0"" ""%~1""""", "", "runas", 1 >> "%temp%\getadmin.vbs"
 
     "%temp%\getadmin.vbs"
     del "%temp%\getadmin.vbs"
@@ -87,9 +73,18 @@ echo ---------------------------------------------------
 REM Add service name in service_list.txt if install was successful
 if '%errorlevel%' == '0' (
     echo %service_name%>> %filename%
+	goto :install_description
 )
 goto :end
 
+:install_description
+echo:
+choice /c yn /n /m "Do you want to set description for the installed service?: (y/n)"
+
+if %errorlevel% == 1 (
+    set "selected_service=!service_name!"
+    goto :get_description
+) else ( goto :eof )
 
 :management
 :: Counter for numbering services
@@ -214,4 +209,5 @@ echo ---------------------------------------------------
 
 :end
 pause
+:eof
 echo Done.
