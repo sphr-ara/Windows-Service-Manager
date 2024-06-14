@@ -73,7 +73,7 @@ echo ---------------------------------------------------
 REM Add service name in service_list.txt if install was successful
 if '%errorlevel%' == '0' (
     echo %service_name%>> %filename%
-	goto :install_description
+    goto :install_description
 )
 goto :end
 
