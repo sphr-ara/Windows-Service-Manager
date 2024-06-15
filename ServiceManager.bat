@@ -28,9 +28,6 @@ if '%errorlevel%' NEQ '0' (
 setlocal enabledelayedexpansion
 set "filename=service_list.txt"
 set "tempfile=temp_service_list.txt"
-REM The following directory is for .NET 4.0
-set DOTNETFX2=%SystemRoot%\Microsoft.NET\Framework\v4.0.30319
-set PATH=%PATH%;%DOTNETFX2%
 
 REM Check if a parameter (file path) is provided
 if "%~1"=="" (
